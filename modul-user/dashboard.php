@@ -1,6 +1,6 @@
 <?php
 
-session_start();
+@session_start();
 
 if (!$_SESSION['id_user']) {
     echo '<script>
@@ -35,10 +35,21 @@ if (!$_SESSION['id_user']) {
             <div class="col-md-9">
                 <div class="card">
                     <div class="card-body">
-                        <label>DASBOARD</label>
+                        <label>USER</label>
                         <hr>
 
                         Selamat Datang <?php echo $_SESSION['nama_lengkap'] ?>
+                        <table class="table table-bordered">
+                            <tr>
+                                <td>nama lengkap</td>
+                                <td>username</td>
+                                <td>password</td>
+                            </tr>
+                            <tr>
+
+                            </tr>
+
+                        </table>
 
                     </div>
                 </div>
