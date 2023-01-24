@@ -8,6 +8,11 @@ if (!$_SESSION['id_user']) {
     </script>
     ';
 }
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+    $q =  "DELETE FROM tbl_user WHERE id_user = '$id'";
+    $d = mysqli_query($connection, $q);
+}
 $q =  "SELECT * FROM tbl_user";
 $d = mysqli_query($connection, $q);
 ?>
@@ -36,7 +41,7 @@ $d = mysqli_query($connection, $q);
                 <div class="card">
                     <div class="card-body">
                         <label> Selamat Datang <?php echo $_SESSION['nama_lengkap'] ?><br> di Modul User</label><br>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Open modal for @mdo</button>
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">+ tambah data</button>
                         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
@@ -47,75 +52,80 @@ $d = mysqli_query($connection, $q);
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form>
-                                            <div class="form-group">
-                                                <label for="recipient-name" class="col-form-label">Recipient:</label>
-                                                <input type="text" class="form-control" id="recipient-name">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="message-text" class="col-form-label">Message:</label>
-                                                <textarea class="form-control" id="message-text"></textarea>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary">Send message</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- <button class="btn btn-success" data-toggle="modal" data-target="#exampleModal">+ Tambah data</button> -->
-                        <!-- <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Registrasi</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-
                                         <div class="form-group">
                                             <label>Nama Lengkap</label>
                                             <input type="text" class="form-control" id="nama_lengkap" placeholder="Masukkan Nama Lengkap">
                                         </div>
-
                                         <div class="form-group">
                                             <label>Username</label>
                                             <input type="text" class="form-control" id="username" placeholder="Masukkan Username">
                                         </div>
-
                                         <div class="form-group">
                                             <label>Password</label>
                                             <input type="password" class="form-control" id="password" placeholder="Masukkan Password">
                                         </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-register btn-block btn-success">REGISTER</button>
-                                        </div>
-
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-register btn-block btn-success">REGISTER</button>
                                     </div>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
                         <hr>
                         <table class="table table-bordered">
                             <tr>
                                 <th>nama lengkap</th>
                                 <th>username</th>
                                 <th>password</th>
+                                <th></th>
+                                <th></th>
                             </tr>
 
                             <?php
                             while ($r = mysqli_fetch_object($d)) {
                                 echo '<tr><td>' . $r->nama_lengkap . '</td>';
                                 echo '<td>' . $r->username . '</td>';
-                                echo '<td>' . $r->password . '</td></tr>';
+                                echo '<td>' . $r->password . '</td>';
+                                echo '<td><a href="#" type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#myModal' . $r->id_user . '">Edit</a></td>';
+                                echo '<td><a href="?id=' . $r->id_user . '" type="button" class="btn btn-danger btn-xs">Hapus</a></td>';
+                                echo '<td></td></tr>';
+                                echo '<div class="modal fade" id="myModal' . $r->id_user . '" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                        ';
+                                $id = $r->id_user;
+                                $q_edit =  "SELECT * FROM tbl_user WHERE id_user='$id'";
+                                $d_edit = mysqli_query($connection, $q_edit);
+                                while ($r_edit = mysqli_fetch_object($d_edit)) {
+                                    echo    '<div class="form-group">
+                                                <label>Nama Lengkap</label>
+                                                <input value=' . $r_edit->nama_lengkap . ' type="text" class="form-control" placeholder="Masukkan Nama Lengkap">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Username</label>
+                                                <input value=' . $r_edit->username . '  type="text" class="form-control"  placeholder="Masukkan Username">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Password</label>
+                                                <input value=""  type="password" class="form-control"  placeholder="Masukkan Password">
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-register btn-block btn-success">REGISTER</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>';
+                                }
                             }
                             ?>
-
-
                         </table>
 
                     </div>
@@ -185,7 +195,7 @@ $d = mysqli_query($connection, $q);
                                 title: 'Register Berhasil!',
                                 text: 'silahkan login!'
                             }).then(function() {
-                                $('.table ').reload()
+                                window.location.href = 'dashboard.php';
                             });
 
                             $("#nama_lengkap").val('');
