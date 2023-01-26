@@ -1,6 +1,7 @@
 <?php
 
 session_start();
+include '../config/koneksi.php';
 
 if (!$_SESSION['id_user']) {
     echo '<script>
@@ -9,7 +10,20 @@ if (!$_SESSION['id_user']) {
     </script>
     ';
 }
-
+// jika tombol simpan/add di klik
+if (isset($_POST['addSiswa'])) {
+    $nama_lengkap = $_POST['nama_lengkap'];
+    $nis = $_POST['nis'];
+    $alamat = $_POST['alamat'];
+    $q = "INSERT INTO tbl_siswa(nama_lengkap, nis, alamat) VALUES (' $nama_lengkap  ', '  $nis  ', '  $alamat  ')";
+    $connection->query($q);
+}
+//jika tombol hapus di klik
+if (isset($_POST['hapusSiswa'])) {
+    $id_siswa = $_POST['id_siswa'];
+    $q = "DELETE FROM tbl_siswa WHERE id_siswa = '$id_siswa'";
+    $connection->query($q);
+}
 ?>
 
 <!doctype html>
@@ -36,9 +50,72 @@ if (!$_SESSION['id_user']) {
                 <div class="card">
                     <div class="card-body">
                         <label>SISWA</label>
-                        <hr>
-
                         Selamat Datang <?php echo $_SESSION['nama_lengkap'] ?>
+                        <hr>
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalAdd">+ tambah data</button>
+                        <div class="modal fade" id="modalAdd" tabindex="-1" role="dialog" aria-labelledby="modalAddLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">Tambah Data</div>
+                                    <div class="modal-body">
+                                        <form action="" method="post">
+                                            <div class="form-group">
+                                                <label>Nama Lengkap</label>
+                                                <input type="text" placeholder="isikan nama anda" name="nama_lengkap" id="" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>NIS</label>
+                                                <input type="text" placeholder="isikan nama NIS" name="nis" id="" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Alamat</label>
+                                                <input type="text" placeholder="isikan alamat" name="alamat" id="" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <button name="addSiswa" type="submit" class="form-control btn btn-success">Simpan</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <table class="table table-responsive">
+                            <thead>
+                                <tr>
+                                <td>nama lengkap</td>
+                                <td>nis</td>
+                                <td>alamat</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $q = "SELECT * FROM tbl_siswa";
+                                $r = $connection->query($q);
+                                while($d = mysqli_fetch_object($r)){?>
+                                <tr>
+                                    <td>
+                                        <?= $d->nama_lengkap ?>
+                                    </td>
+                                     <td>
+                                         <?= $d->nis ?>
+                                     </td>
+                                    <td>
+                                        <?= $d->alamat ?>
+                                     </td>
+                                     <td>
+                                     <form action="" method="post">
+                                                <input type="hidden" name="id_siswa" value="<?= $d->id_siswa ?>">
+                                                <button name="hapusSiswa" class="btn btn-danger">hapus
+                                            </form>
+                                     </td>
+                                     <td></td>
+                                 </tr>
+                                <?php
+                                }
+                                ?>
+                            </tbody>
+                        </table>
 
                     </div>
                 </div>
